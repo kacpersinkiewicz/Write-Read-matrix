@@ -1,0 +1,15 @@
+metadata:
+  input: int
+
+data:
+  matrix_data: { size: [ 5,5 ], type: array, subtype: int }
+  
+plugins:
+  decl_hdf5:
+    - file: data.h5
+      when: $input=0
+      write: [ matrix_data ]
+    - file: data.h5
+      when: $input=1
+      read: [ matrix_data ]
+
