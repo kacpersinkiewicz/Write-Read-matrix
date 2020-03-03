@@ -73,7 +73,7 @@ void* write(void*)
         cout << "w data unlocked" << endl;
         sleep_time = (( std::rand() % 8 ) + 3 ); //sleep for 3-10s
         sleep(sleep_time);
-        cout << "w i was asleep for " << zzz << " seconds" << endl; 
+        cout << "w i was asleep for " << sleep_time << " seconds" << endl; 
     }
     return NULL;
 }
