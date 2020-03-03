@@ -85,7 +85,7 @@ int main(int argc, char* argv[])
 
     PDI_init(PC_parse_path("matrix_event.yml"));
     int status = pthread_mutex_init(&mutex,NULL); //checking if mutex was implemented correctly
-    if (status!=0)
+    if (status != 0)
     {
         cerr << "Error with creating a mutex" << endl;
         return status; 
