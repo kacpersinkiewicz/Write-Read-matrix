@@ -14,7 +14,7 @@ void* read(void*)
 {
     while(1)
     {
-        int input_s=1;
+        int input_s = 1;
         int matrix[SIZE][SIZE];
         cout << "[READER] Waiting before entering critical section" << endl;
         pthread_mutex_lock(&mutex);
@@ -25,7 +25,7 @@ void* read(void*)
         pthread_mutex_unlock(&mutex);
         cout << "[READER] Data read, leaving critical section" << endl;
 
-        for (int i = 0; i <SIZE; i++) //reading data
+        for (int i = 0; i < SIZE; i++) //reading data
         {
             for (int j = 0; j < SIZE; j++)
             {
@@ -33,7 +33,7 @@ void* read(void*)
             }
             cout << endl;
         }
-        int sleep_time = (( std::rand() % 3 ) + 1 ); //sleep for 1-3s
+        int sleep_time = (( std::rand() % 3 ) + 1 ); //sleep for 1 - 3s
         sleep(sleep_time);
         cout << "[READER] Waiting for " << sleep_time << " seconds" << endl; 
     }
@@ -42,21 +42,21 @@ void* read(void*)
 
 void* write(void*)
 {
-    int input_s=0;
+    int input_s = 0;
     int matrix[SIZE][SIZE];
  
-    for (int i = 0; i<SIZE; i++)
+    for (int i = 0; i < SIZE; i++)
     {
-        for(int j=0; j<SIZE; j++)
+        for(int j = 0; j < SIZE; j++)
         {
             matrix[i][j]=0;
         }
     }
     while(1)
     {
-        for (int i = 0; l<SIZE; i++)
+        for (int i = 0; i < SIZE; i++)
         {
-            for(int j=0; j<SIZE; j++)
+            for(int j = 0; j < SIZE; j++)
             {
                 matrix[i][j]++;
             }
@@ -69,7 +69,7 @@ void* write(void*)
         PDI_expose("matrix_data", matrix, PDI_OUT);
         pthread_mutex_unlock(&mutex);
         cout << "[WRITER] Data written, leaving critical section" << endl;
-        int sleep_time = (( std::rand() % 8 ) + 3 ); //sleep for 3-10s
+        int sleep_time = (( std::rand() % 8 ) + 3 ); //sleep for 3 - 10s
         sleep(sleep_time);
         cout << "[WRITER] Waiting for " << sleep_time << " seconds" << endl; 
     }
