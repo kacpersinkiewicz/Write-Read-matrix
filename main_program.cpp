@@ -18,7 +18,7 @@ void* read(void*)
         int matrix[SIZE][SIZE];
         cout << "[READER] Waiting before entering critical section" << endl;
         pthread_mutex_lock(&mutex);
-        cout << "Entered critical section, reading data..." << endl;
+        cout << "[READER] Entered critical section, reading data..." << endl;
         sleep(1);
         PDI_expose("input", &input_s, PDI_OUT); // set input to read
         PDI_expose("matrix_data", matrix, PDI_IN);
