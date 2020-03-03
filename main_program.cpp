@@ -49,7 +49,7 @@ void* write(void*)
     {
         for(int j = 0; j < SIZE; j++)
         {
-            matrix[i][j]=0;
+            matrix[i][j] = 0;
         }
     }
     while(1)
@@ -84,7 +84,7 @@ int main(int argc, char* argv[])
     srand( time( NULL ) );
 
     PDI_init(PC_parse_path("matrix_event.yml"));
-    int status = pthread_mutex_init(&mutex,NULL); //checking if mutex was implemented correctly
+    int status = pthread_mutex_init(&mutex, NULL); //checking if mutex was implemented correctly
     if (status != 0)
     {
         cerr << "Error with creating a mutex" << endl;
