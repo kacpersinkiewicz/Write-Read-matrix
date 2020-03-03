@@ -1,2 +1,2 @@
 all:
-	g++ test.cpp -lpdi -lparaconf -lpthread -o result
+	g++ main_program.cpp -lpdi -lparaconf -lpthread -o result
