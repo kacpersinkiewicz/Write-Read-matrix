@@ -1,7 +1,7 @@
 #include <pdi.h>
-#include<iostream>
-#include<unistd.h>
-#include<pthread.h>
+#include <iostream>
+#include <unistd.h>
+#include <pthread.h>
 #include <cstdlib>
 #include <ctime>
 #define SIZE 5
