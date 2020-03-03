@@ -47,26 +47,26 @@ void* write(void*)
  
     for (int i = 0; i < SIZE; i++)
     {
-        for(int j = 0; j < SIZE; j++)
+        for (int j = 0; j < SIZE; j++)
         {
             matrix[i][j] = 0;
         }
     }
-    while(1)
+    while (1)
     {
-        for (int i = 0; i < SIZE; i++)
+        for int i = 0; i < SIZE; i++)
         {
-            for(int j = 0; j < SIZE; j++)
+            for (int j = 0; j < SIZE; j++)
             {
                 matrix[i][j]++;
             }
         }
         cout << "[WRITER] Waiting before entering critical section" << endl;
-        pthread_mutex_lock(&mutex);
+        pthread_mutex_lock (&mutex);
         cout << "[WRITER] Entered critical section, writing data..." << endl;
-        sleep(5);
-        PDI_expose("input", &input_s, PDI_OUT); // set input to write
-        PDI_expose("matrix_data", matrix, PDI_OUT);
+        sleep (5);
+        PDI_expose ("input", &input_s, PDI_OUT); // set input to write
+        PDI_expose ("matrix_data", matrix, PDI_OUT);
         pthread_mutex_unlock(&mutex);
         cout << "[WRITER] Data written, leaving critical section" << endl;
         int sleep_time = (( std::rand() % 8 ) + 3 ); //sleep for 3 - 10s
@@ -79,12 +79,12 @@ void* write(void*)
 
 
 
-int main(int argc, char* argv[])
+int main (int argc, char* argv[])
 {
-    srand( time( NULL ) );
+    srand ( time( NULL ) );
 
-    PDI_init(PC_parse_path("matrix_event.yml"));
-    int status = pthread_mutex_init(&mutex, NULL); //checking if mutex was implemented correctly
+    PDI_init (PC_parse_path("matrix_event.yml"));
+    int status = pthread_mutex_init (&mutex, NULL); //checking if mutex was implemented correctly
     if (status != 0)
     {
         cerr << "Error with creating a mutex" << endl;
@@ -93,12 +93,12 @@ int main(int argc, char* argv[])
     pthread_t writer;
     pthread_t reader;
 
-    pthread_create(&writer, NULL, write, NULL); 
-    pthread_create(&reader, NULL, read, NULL); 
-    pthread_join(writer, NULL); //prevents for killing threads in the end of main function
-    pthread_join(reader, NULL);
-    pthread_mutex_destroy(&mutex);
+    pthread_create (&writer, NULL, write, NULL); 
+    pthread_create (&reader, NULL, read, NULL); 
+    pthread_join (writer, NULL); //prevents for killing threads in the end of main function
+    pthread_join (reader, NULL);
+    pthread_mutex_destroy (&mutex);
 
-    PDI_finalize();
+    PDI_finalize ();
     return 0;
 }
