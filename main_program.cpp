@@ -4,10 +4,12 @@
 #include <pthread.h>
 #include <cstdlib>
 #include <ctime>
+#include <csignal>
 #define SIZE 5
 
 
 using namespace std;
+
 pthread_mutex_t mutex;
 pthread_mutex_t mutex_reader;
 
@@ -83,12 +85,19 @@ void* write(void*)
     return NULL;
 }
 
-
+void signalHandler (int signum)
+{
+    pthread_mutex_destroy (&mutex);
+    pthread_mutex_destroy (&mutex_reader);
+    PDI_finalize ();
+    exit(signum);
+}
 
 
 int main (int argc, char* argv[])
 {
     srand ( time( NULL ) );
+    signal(SIGINT, signalHandler);
 
     PDI_init (PC_parse_path("matrix_event.yml"));
     int status = pthread_mutex_init (&mutex, NULL); //checking if mutex was implemented correctly
@@ -101,7 +110,7 @@ int main (int argc, char* argv[])
     int status_reader = pthread_mutex_init (&mutex_reader, NULL);   
     if (status_reader != 0)
     {
-        cerr << "Error with creating a mutex_reader" << endl;
+        cerr << "Error with creating a mutex" << endl;
         return status; 
     }
     
@@ -114,9 +123,9 @@ int main (int argc, char* argv[])
     pthread_create (&reader, NULL, read, NULL); 
     pthread_join (writer, NULL); //prevents for killing threads in the end of main function
     pthread_join (reader, NULL);
-    pthread_mutex_destroy (&mutex);
-    pthread_mutex_destroy (&mutex_reader);
+    //pthread_mutex_destroy (&mutex);
+    //pthread_mutex_destroy (&mutex_reader);
 
-    PDI_finalize ();
+    //PDI_finalize ();
     return 0;
 }
