@@ -4,8 +4,11 @@ Description
 ===
 
 Program creates 2 threads:
+
 writer, who writes 5x5 matrix and incrementing all values by 1.
+
 reader, who reads 5x5 matrix and shows result in the terminal window.
+
 program will ends when user press ctrl+c buttons.
 
 Program using PDI with decl_hdf5 plugin.
