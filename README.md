@@ -9,7 +9,7 @@ writer, who writes 5x5 matrix and incrementing all values by 1.
 
 reader, who reads 5x5 matrix and shows result in the terminal window.
 
-Program using PDI library with decl_hdf5 plugin.
+Program uses PDI library with decl_hdf5 plugin.
 
 
 Compile
