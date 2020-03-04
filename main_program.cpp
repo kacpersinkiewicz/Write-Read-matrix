@@ -9,9 +9,11 @@
 
 using namespace std;
 pthread_mutex_t mutex;
+pthread_mutex_t mutex_reader;
 
 void* read(void*)
 {
+    pthread_mutex_lock (&mutex_reader);
     while(1)
     {
         int input_s = 1;
@@ -52,9 +54,14 @@ void* write(void*)
             matrix[i][j] = 0;
         }
     }
+    
+    PDI_expose ("input", &input_s, PDI_OUT);
+    PDI_expose ("matrix_data", matrix, PDI_OUT);
+    pthread_mutex_unlock (&mutex_reader);
+
     while (1)
     {
-        for int i = 0; i < SIZE; i++)
+        for (int i = 0; i < SIZE; i++)
         {
             for (int j = 0; j < SIZE; j++)
             {
@@ -82,6 +89,7 @@ void* write(void*)
 int main (int argc, char* argv[])
 {
     srand ( time( NULL ) );
+    pthread_mutex_lock (&mutex_reader);
 
     PDI_init (PC_parse_path("matrix_event.yml"));
     int status = pthread_mutex_init (&mutex, NULL); //checking if mutex was implemented correctly
@@ -98,6 +106,7 @@ int main (int argc, char* argv[])
     pthread_join (writer, NULL); //prevents for killing threads in the end of main function
     pthread_join (reader, NULL);
     pthread_mutex_destroy (&mutex);
+    pthread_mutex_destroy (&mutex_reader);
 
     PDI_finalize ();
     return 0;
