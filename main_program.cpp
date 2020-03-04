@@ -1,6 +1,7 @@
 #include <pdi.h>
 #include <iostream>
-#include <unistd.h>
+#include <unistd.h> //sleep
+#include <stdlib.h> //rand
 #include <pthread.h>
 #include <ctime>
 #include <csignal>
