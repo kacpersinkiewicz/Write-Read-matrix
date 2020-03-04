@@ -87,18 +87,18 @@ void* write(void*)
         int sleep_time = (( std::rand() % 8 ) + 3 ); //sleep for 3 - 10s
         sleep(sleep_time);
         cout << "[WRITER] Waiting for " << sleep_time << " seconds" << endl;
-        pthread_mutex_unlock (&mutex_signal_writer); 
+        pthread_mutex_lock (&mutex_signal_writer); 
     }
     return NULL;
 }
 
 void signalHandler (int signum)
 {
-pthread_mutex_lock (&mutex_signal_reader);
-pthread_mutex_lock (&mutex_signal_writer);
-work=false;
-pthread_mutex_unlock (&mutex_signal_reader);
-pthread_mutex_unlock (&mutex_signal_writer);
+    pthread_mutex_lock (&mutex_signal_reader);
+    pthread_mutex_lock (&mutex_signal_writer);
+    work=false;
+    pthread_mutex_unlock (&mutex_signal_reader);
+    pthread_mutex_unlock (&mutex_signal_writer);
 }
 
 
