@@ -125,30 +125,30 @@ int main (int argc, char* argv[])
 
     PDI_init (PC_parse_path("matrix_event.yml"));
 
-    int status_data = pthread_mutex_init (&mutex_data, NULL); //implementing and checking if mutex was implemented correctly
-    if (status_data != 0)
+        int status = pthread_mutex_init (&mutex_data, NULL); //implementing and checking if mutex was implemented correctly
+    if (status != 0)
     {
         cerr << "Error with creating a mutex_data" << endl;
-        return status_data; 
+        return status; 
     }
-    int status_reader = pthread_mutex_init (&mutex_init_reader, NULL);   
-    if (status_reader != 0)
+    status = pthread_mutex_init (&mutex_init_reader, NULL);   
+    if (status != 0)
     {
         cerr << "Error with creating a mutex_init_reader" << endl;
-        return status_reader; 
+        return status; 
     }
     
-    int status_signal_reader = pthread_mutex_init (&mutex_signal_reader, NULL);   
-    if (status_signal_reader != 0)
+    status = pthread_mutex_init (&mutex_signal_reader, NULL);   
+    if (status != 0)
     {
         cerr << "Error with creating a mutex_signal_reader" << endl;
-        return status_signal_reader; 
+        return status; 
     }
-         int status_signal_writer = pthread_mutex_init (&mutex_signal_writer, NULL);   
-    if (status_signal_writer != 0)
+    status= pthread_mutex_init (&mutex_signal_writer, NULL);   
+    if (status != 0)
     {
         cerr << "Error with creating a mutex_signal_writer" << endl;
-        return status_signal_writer; 
+        return status; 
     }
 
 
