@@ -22,11 +22,16 @@ Use './result' command to run program.
 Description of file
 ===
 Program files are:
+
 main_program.cpp - main program code
+
 matrix_event.yml - event file used by PDI
+
 Makefile - used to compile program
 
 Output files:
+
 data.h5 - matrix data in hdf5 format
+
 result - compiled program output
 
