@@ -137,7 +137,7 @@ int main (int argc, char* argv[])
         return status_reader; 
     }
     
-     int status_signal_reader = pthread_mutex_init (&mutex_signal_reader, NULL);   
+    int status_signal_reader = pthread_mutex_init (&mutex_signal_reader, NULL);   
     if (status_signal_reader != 0)
     {
         cerr << "Error with creating a mutex_signal_reader" << endl;
