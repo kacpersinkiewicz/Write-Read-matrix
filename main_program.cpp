@@ -101,7 +101,7 @@ int main (int argc, char* argv[])
     int status_reader = pthread_mutex_init (&mutex_reader, NULL);   
     if (status_reader != 0)
     {
-        cerr << "Error with creating a mutex" << endl;
+        cerr << "Error with creating a mutex_reader" << endl;
         return status; 
     }
     
