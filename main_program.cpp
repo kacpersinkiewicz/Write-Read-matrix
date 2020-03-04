@@ -124,7 +124,7 @@ int main(int argc, char* argv[])
 
     PDI_init(PC_parse_path("matrix_event.yml"));
 
-    int status = pthread_mutex_init(&mutex_data, NULL); //implementing and checking if mutex was implemented correctly
+    int status = pthread_mutex_init(&mutex_data, NULL); //implementing and checking if mutex was initialized correctly
     if(status != 0)
     {
         cerr << "Error with creating a mutex_data" << endl;
@@ -157,7 +157,7 @@ int main(int argc, char* argv[])
 
     pthread_create(&writer, NULL, write, NULL); 
     pthread_create(&reader, NULL, read, NULL); 
-    pthread_join(writer, NULL); //prevents for killing threads in the end of main function
+    pthread_join(writer, NULL); //prevents from killing threads in the end of main function
     pthread_join(reader, NULL);
     pthread_mutex_destroy(&mutex_data);
     pthread_mutex_destroy(&mutex_init_reader);
