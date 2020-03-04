@@ -2,7 +2,6 @@
 #include <iostream>
 #include <unistd.h>
 #include <pthread.h>
-#include <cstdlib>
 #include <ctime>
 #include <csignal>
 #define SIZE 5
@@ -11,12 +10,12 @@ bool work;
 
 using namespace std;
 
-pthread_mutex_t mutex_data;
-pthread_mutex_t mutex_init_reader;
-pthread_mutex_t mutex_signal_reader;
-pthread_mutex_t mutex_signal_writer;
+pthread_mutex_t mutex_data; //main mutex, protect acces to matrix
+pthread_mutex_t mutex_init_reader; //used to write initial miatrix before reader thread will begin  
+pthread_mutex_t mutex_signal_reader; //used to safe changing data by ctrl+c signal for reader
+pthread_mutex_t mutex_signal_writer; //used to safe changing data by ctrl+c signal for writer
 
-void mask_sig(void)
+void mask_sig(void) // function allowing to mask threads
 {
     sigset_t mask;
     sigemptyset(&mask);
@@ -24,7 +23,7 @@ void mask_sig(void)
     pthread_sigmask(SIG_BLOCK, &mask, NULL);
 }
 
-void* read(void*)
+void* read(void*) // reader function
 {
     mask_sig();
     pthread_mutex_lock (&mutex_init_reader);
@@ -106,7 +105,7 @@ void* write(void*)
     return NULL;
 }
 
-void signalHandler (int signum)
+void signalHandler (int signum) // function used when ctrl+c is pressed
 {
     pthread_mutex_lock (&mutex_signal_reader);
     pthread_mutex_lock (&mutex_signal_writer);
@@ -121,23 +120,37 @@ int main (int argc, char* argv[])
 {
     work = true;
     srand ( time( NULL ) );
-    signal(SIGINT, signalHandler);
+    signal(SIGINT, signalHandler); //catching ctrl+c signal and running signalHandler function
 
     PDI_init (PC_parse_path("matrix_event.yml"));
-    int status = pthread_mutex_init (&mutex_data, NULL); //checking if mutex was implemented correctly
-    if (status != 0)
+
+    int status_data = pthread_mutex_init (&mutex_data, NULL); //implementing and checking if mutex was implemented correctly
+    if (status_data != 0)
     {
-        cerr << "Error with creating a mutex" << endl;
-        return status; 
+        cerr << "Error with creating a mutex_data" << endl;
+        return status_data; 
     }
-    
     int status_reader = pthread_mutex_init (&mutex_init_reader, NULL);   
     if (status_reader != 0)
     {
-        cerr << "Error with creating a mutex" << endl;
-        return status; 
+        cerr << "Error with creating a mutex_init_reader" << endl;
+        return status_reader; 
     }
     
+     int status_signal_reader = pthread_mutex_init (&mutex_signal_reader, NULL);   
+    if (status_signal_reader != 0)
+    {
+        cerr << "Error with creating a mutex_signal_reader" << endl;
+        return status_signal_reader; 
+    }
+         int status_signal_writer = pthread_mutex_init (&mutex_signal_writer, NULL);   
+    if (status_signal_writer != 0)
+    {
+        cerr << "Error with creating a mutex_signal_writer" << endl;
+        return status_signal_writer; 
+    }
+
+
     pthread_mutex_lock (&mutex_init_reader);
 
     pthread_t writer;
@@ -153,6 +166,5 @@ int main (int argc, char* argv[])
     pthread_mutex_destroy (&mutex_signal_writer);
 
     PDI_finalize ();
-    cout << "THE END" << endl;
     return 0;
 }
