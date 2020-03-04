@@ -10,7 +10,7 @@ bool work;
 
 using namespace std;
 
-pthread_mutex_t mutex_data; //main mutex, protect acces to matrix
+pthread_mutex_t mutex_data; //main mutex, protect access to matrix
 pthread_mutex_t mutex_init_reader; //used to write initial miatrix before reader thread will begin  
 pthread_mutex_t mutex_signal_reader; //used to safe changing data by ctrl+c signal for reader
 pthread_mutex_t mutex_signal_writer; //used to safe changing data by ctrl+c signal for writer
