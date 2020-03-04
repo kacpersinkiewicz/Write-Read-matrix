@@ -6,18 +6,22 @@
 #include <ctime>
 #include <csignal>
 #define SIZE 5
+bool work;
 
 
 using namespace std;
 
 pthread_mutex_t mutex;
 pthread_mutex_t mutex_reader;
+pthread_mutex_t mutex_signal_reader;
+pthread_mutex_t mutex_signal_writer;
 
 void* read(void*)
 {
     pthread_mutex_lock (&mutex_reader);
-    while(1)
+    while(work==true)
     {
+        pthread_mutex_unlock (&mutex_signal_reader);
         int input_s = 1;
         int matrix[SIZE][SIZE];
         cout << "[READER] Waiting before entering critical section" << endl;
@@ -39,7 +43,8 @@ void* read(void*)
         }
         int sleep_time = (( std::rand() % 3 ) + 1 ); //sleep for 1 - 3s
         sleep(sleep_time);
-        cout << "[READER] Waiting for " << sleep_time << " seconds" << endl; 
+        cout << "[READER] Waiting for " << sleep_time << " seconds" << endl;
+        pthread_mutex_lock (&mutex_signal_reader); 
     }
     return NULL;
 }
@@ -61,8 +66,9 @@ void* write(void*)
     PDI_expose ("matrix_data", matrix, PDI_OUT);
     pthread_mutex_unlock (&mutex_reader);
 
-    while (1)
+    while (work==true)
     {
+        pthread_mutex_unlock (&mutex_signal_writer);
         for (int i = 0; i < SIZE; i++)
         {
             for (int j = 0; j < SIZE; j++)
@@ -80,22 +86,25 @@ void* write(void*)
         cout << "[WRITER] Data written, leaving critical section" << endl;
         int sleep_time = (( std::rand() % 8 ) + 3 ); //sleep for 3 - 10s
         sleep(sleep_time);
-        cout << "[WRITER] Waiting for " << sleep_time << " seconds" << endl; 
+        cout << "[WRITER] Waiting for " << sleep_time << " seconds" << endl;
+        pthread_mutex_unlock (&mutex_signal_writer); 
     }
     return NULL;
 }
 
 void signalHandler (int signum)
 {
-    pthread_mutex_destroy (&mutex);
-    pthread_mutex_destroy (&mutex_reader);
-    PDI_finalize ();
-    exit(signum);
+pthread_mutex_lock (&mutex_signal_reader);
+pthread_mutex_lock (&mutex_signal_writer);
+work=false;
+pthread_mutex_unlock (&mutex_signal_reader);
+pthread_mutex_unlock (&mutex_signal_writer);
 }
 
 
 int main (int argc, char* argv[])
 {
+    work = true;
     srand ( time( NULL ) );
     signal(SIGINT, signalHandler);
 
@@ -123,9 +132,11 @@ int main (int argc, char* argv[])
     pthread_create (&reader, NULL, read, NULL); 
     pthread_join (writer, NULL); //prevents for killing threads in the end of main function
     pthread_join (reader, NULL);
-    //pthread_mutex_destroy (&mutex);
-    //pthread_mutex_destroy (&mutex_reader);
+    pthread_mutex_destroy (&mutex);
+    pthread_mutex_destroy (&mutex_reader);
+    pthread_mutex_destroy (&mutex_signal_reader);
+    pthread_mutex_destroy (&mutex_signal_writer);
 
-    //PDI_finalize ();
+    PDI_finalize ();
     return 0;
 }
