@@ -56,6 +56,7 @@ void* read(void*)
         cout << "[READER] Waiting for " << sleep_time << " seconds" << endl;
         pthread_mutex_lock (&mutex_signal_reader); 
     }
+    cout << "[READER] Read proces ended." << endl;
     return NULL;
 }
 
@@ -101,6 +102,7 @@ void* write(void*)
         cout << "[WRITER] Waiting for " << sleep_time << " seconds" << endl;
         pthread_mutex_lock (&mutex_signal_writer); 
     }
+    cout << "[WRITER] Write proces ended." << endl;
     return NULL;
 }
 
@@ -109,6 +111,7 @@ void signalHandler (int signum)
     pthread_mutex_lock (&mutex_signal_reader);
     pthread_mutex_lock (&mutex_signal_writer);
     work=false;
+    cout << "[SIGNAL] Program OFF, ending threads" << endl;
     pthread_mutex_unlock (&mutex_signal_reader);
     pthread_mutex_unlock (&mutex_signal_writer);
 }
@@ -150,5 +153,6 @@ int main (int argc, char* argv[])
     pthread_mutex_destroy (&mutex_signal_writer);
 
     PDI_finalize ();
+    cout << "THE END" << endl;
     return 0;
 }
