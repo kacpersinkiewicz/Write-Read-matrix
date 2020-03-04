@@ -50,11 +50,63 @@ void* write(void*)
     for (int i = 0; i < SIZE; i++)
     {
         for (int j = 0; j < SIZE; j++)
+#include <pdi.h>
+#include <iostream>
+#include <unistd.h>
+#include <pthread.h>
+#include <cstdlib>
+#include <ctime>
+#define SIZE 5
+
+
+using namespace std;
+pthread_mutex_t mutex;
+pthread_mutex_t mutex_reader;
+
+void* read(void*)
+{
+    pthread_mutex_lock (&mutex_reader);
+    while(1)
+    {
+        int input_s = 1;
+        int matrix[SIZE][SIZE];
+        cout << "[READER] Waiting before entering critical section" << endl;
+        pthread_mutex_lock(&mutex);
+        cout << "[READER] Entered critical section, reading data..." << endl;
+        sleep(1);
+        PDI_expose("input", &input_s, PDI_OUT); // set input to read
+        PDI_expose("matrix_data", matrix, PDI_IN);
+        pthread_mutex_unlock(&mutex);
+        cout << "[READER] Data read, leaving critical section" << endl;
+
+        for (int i = 0; i < SIZE; i++) //reading data
+        {
+            for (int j = 0; j < SIZE; j++)
+            {
+                cout << matrix[i][j] << " ";
+            }
+            cout << endl;
+        }
+        int sleep_time = (( std::rand() % 3 ) + 1 ); //sleep for 1 - 3s
+        sleep(sleep_time);
+        cout << "[READER] Waiting for " << sleep_time << " seconds" << endl; 
+    }
+    return NULL;
+}
+
+void* write(void*)
+{
+    int input_s = 0;
+    int matrix[SIZE][SIZE];
+ 
+    for (int i = 0; i < SIZE; i++)
+    {
+        for (int j = 0; j < SIZE; j++)
         {
             matrix[i][j] = 0;
         }
     }
-    
+
     PDI_expose ("input", &input_s, PDI_OUT);
     PDI_expose ("matrix_data", matrix, PDI_OUT);
     pthread_mutex_unlock (&mutex_reader);
@@ -89,7 +141,6 @@ void* write(void*)
 int main (int argc, char* argv[])
 {
     srand ( time( NULL ) );
-    pthread_mutex_lock (&mutex_reader);
 
     PDI_init (PC_parse_path("matrix_event.yml"));
     int status = pthread_mutex_init (&mutex, NULL); //checking if mutex was implemented correctly
@@ -98,6 +149,16 @@ int main (int argc, char* argv[])
         cerr << "Error with creating a mutex" << endl;
         return status; 
     }
+    
+    int status_reader = pthread_mutex_init (&mutex_reader, NULL);   
+    if (status_reader != 0)
+    {
+        cerr << "Error with creating a mutex" << endl;
+        return status; 
+    }
+    
+    pthread_mutex_lock (&mutex_reader);
+
     pthread_t writer;
     pthread_t reader;
 
