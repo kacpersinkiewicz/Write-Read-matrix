@@ -5,7 +5,7 @@ Description
 
 Program creates 2 threads:
 
-writer, who writes 5x5 matrix and incrementing all values by 1.
+writer, who writes 5x5 matrix and incrementing all values.
 
 reader, who reads 5x5 matrix and shows result in the terminal window.
 
